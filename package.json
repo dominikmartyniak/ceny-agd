@@ -1,0 +1,25 @@
+{
+  "name": "porownywarka-agd-rtv",
+  "version": "3.1.0",
+  "description": "Porównywarka cen AGD/RTV w polskich sklepach (Euro, Media Expert, Neonet, Media Markt i inne)",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "npm install && npx playwright install chromium",
+    "test": "node test/test.js",
+    "test:github": "node test/e2e-github.js",
+    "build:site": "node gh/build-site.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "express": "^4.21.2",
+    "jimp": "^1.6.1",
+    "playwright": "1.65.1",
+    "tesseract.js": "^7.0.0",
+    "zxing-wasm": "^3.1.7"
+  }
+}

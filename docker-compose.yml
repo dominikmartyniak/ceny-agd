@@ -1,0 +1,18 @@
+# Uruchomienie:  1) skopiuj .env.example do .env i ustaw hasło   2) docker compose up -d
+services:
+  porownywarka:
+    build: .
+    container_name: porownywarka-agd
+    restart: unless-stopped
+    init: true
+    shm_size: "1gb"          # Chromium potrzebuje pamięci współdzielonej
+    ports:
+      - "3000:3000"
+    environment:
+      APP_PASSWORD: ${APP_PASSWORD:?Ustaw APP_PASSWORD w pliku .env}
+      DEFAULT_CITY: ${DEFAULT_CITY:-Bielsko-Biała}
+      WATCH_HOURS: ${WATCH_HOURS:-6}
+      CACHE_MIN: ${CACHE_MIN:-30}
+      CONCURRENCY: ${CONCURRENCY:-3}
+    volumes:
+      - ./data:/data         # historia cen, obserwowane, ciasteczka przeglądarki
