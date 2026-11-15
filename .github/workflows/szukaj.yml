@@ -1,0 +1,48 @@
+# Wyszukiwanie uruchamiane z aplikacji (telefon / komputer) – nie wymaga włączonego komputera.
+name: Szukaj
+run-name: "${{ inputs.kind }} ${{ inputs.id }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: Identyfikator zlecenia (nadaje aplikacja)
+        required: true
+      kind:
+        description: search | basket | stock | promos | url | discover | similar
+        required: true
+        default: search
+      payload:
+        description: Parametry (JSON)
+        required: true
+        default: '{"q":"WW80T504DAEA"}'
+
+permissions:
+  contents: write
+
+jobs:
+  szukaj:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalacja
+        run: npm ci --omit=dev
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      - name: Przeglądarka
+        run: google-chrome --version || npx playwright install --with-deps chromium
+      - name: Szukaj w sklepach
+        run: node gh/run.js
+        env:
+          REQ_ID: ${{ inputs.id }}
+          KIND: ${{ inputs.kind }}
+          PAYLOAD: ${{ inputs.payload }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BROWSER_CHANNEL: chrome
+          PROFILE_DIR: /tmp/profil
+          TZ: Europe/Warsaw
